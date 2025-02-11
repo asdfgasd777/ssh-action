@@ -1,0 +1,32 @@
+name: 'SSH Connection Action with sshpass'
+description: 'Connect to a remote server via SSH using sshpass and run commands'
+
+inputs:
+  user:
+    description: 'User for SSH connection'
+    required: true
+    default: 'ubuntu'
+  password:
+    description: 'Password for SSH connection'
+    required: true
+  host:
+    description: 'IP address or domain of the remote server'
+    required: true
+  port:
+    description: 'SSH connection port'
+    required: false
+    default: '22'  # Default (standard SSH port)
+  commands:
+    description: 'Commands to run after SSH connection'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'docker://asdfgasd777/ssh-action:latest'
+  entrypoint: '/entrypoint.sh'
+  args:
+    - "${{ inputs.password }}"
+    - "${{ inputs.user }}"
+    - "${{ inputs.host }}"
+    - "${{ inputs.port }}"
+    - "${{ inputs.commands }}"
