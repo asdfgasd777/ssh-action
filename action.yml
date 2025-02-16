@@ -21,12 +21,20 @@ inputs:
     required: true
 
 runs:
-  using: 'docker'
-  image: 'docker://asdfgasd777/ssh-action:latest'
-  entrypoint: '/entrypoint.sh'
-  args:
-    - "${{ inputs.password }}"
-    - "${{ inputs.user }}"
-    - "${{ inputs.host }}"
-    - "${{ inputs.port }}"
-    - "${{ inputs.commands }}"
+  using: 'composite'
+  steps:
+
+    - name: Install SSHPASS
+      id: install_sshpass
+      shell: bash
+      run: |
+        sudo apt-get update && \
+        sudo apt-get install -y sshpass
+
+    - name: Give execution permissions to entrypoint.sh
+      shell: bash
+      run: chmod +x ${{ github.action_path }}/entrypoint.sh
+
+    - name: Run entrypoint.sh
+      shell: bash
+      run: ${{ github.action_path }}/entrypoint.sh "${{ inputs.password }}" "${{ inputs.user }}" "${{ inputs.host }}" "${{ inputs.port }}" "${{ inputs.commands }}"
